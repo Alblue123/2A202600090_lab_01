@@ -58,7 +58,7 @@ def call_openai(
     from openai import OpenAI
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     
-    start_time = time.time()
+    start_time = time.perf_counter()
     
     response = client.chat.completions.create(
         model=model,
@@ -68,7 +68,7 @@ def call_openai(
         max_tokens=max_tokens,
     )
 
-    end_time = time.time()
+    end_time = time.perf_counter()
     latency = end_time - start_time
     
     response_text = response.choices[0].message.content
@@ -177,7 +177,7 @@ def streaming_chatbot() -> None:
             break
         
         history.append({"role": "user", "content": user_input})
-        history = history[-6:]  
+      
         
         stream = client.chat.completions.create(
             model=OPENAI_MODEL,
@@ -193,6 +193,8 @@ def streaming_chatbot() -> None:
             assistant_reply += delta
         
         history.append({"role": "assistant", "content": assistant_reply}) 
+        
+        history = history[-6:]
 
 
 # ---------------------------------------------------------------------------
